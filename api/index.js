@@ -5,7 +5,7 @@ const app = express();
 const port = 3000;
 
 app.get("/api/users", async(req, res)=>{
-    res.send("Hello from Image_Gen");
+    res.send("Hello from k");
 })
 
 app.listen(port ,(req, res)=>{
