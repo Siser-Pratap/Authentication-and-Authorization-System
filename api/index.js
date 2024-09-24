@@ -6,6 +6,7 @@ dotenv.config();
 
 const app = express();
 const port = 3000;
+connectDb(process.env.MONGODB_URL);
 
 app.get("/", async(req, res)=>{
     res.send("Hello from k");
