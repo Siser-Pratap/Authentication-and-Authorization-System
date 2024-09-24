@@ -7,7 +7,9 @@ import authRouter from "./routes/authRoutes.js";
 
 dotenv.config();
 
+
 const app = express();
+app.use(express.json());
 const port = 3000;
 connectDb(process.env.MONGODB_URL);
 
