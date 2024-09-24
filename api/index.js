@@ -1,13 +1,18 @@
 import express from "express";
 import * as dotenv from "dotenv";
+import connectDb from "./connectDb.js";
+
+dotenv.config();
 
 const app = express();
 const port = 3000;
 
-app.get("/api/users", async(req, res)=>{
+app.get("/", async(req, res)=>{
     res.send("Hello from k");
+
 })
 
-app.listen(port ,(req, res)=>{
+app.listen(port ,()=>{
     console.log("Server running on port " + port);
+    
 })
