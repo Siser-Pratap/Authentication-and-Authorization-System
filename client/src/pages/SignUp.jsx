@@ -27,6 +27,9 @@ const SignUp = () => {
         
         const data = await res.json();
         console.log(data);
+        if(data.success === false){
+          setError("Something went wrong");
+        }
         
         setMessage(data.message);
         if(data.message === "User already registered"){
@@ -98,8 +101,9 @@ const SignUp = () => {
     </div>
     <p className='text-red-700 exists mt-5'>{error && 'Something went wrong!'}</p>
     <p className='text-red-700 exists mt-5 mb-5 mr-2'>{setMessage && `${Message}`}</p>
-    <Link to="/login"  className='bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80'>{complete && "Login!"}</Link>
-    
+    {complete && 
+    <Link to="/sign-in"  className='bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80'>{"SignIn!"}</Link>
+    }
     
   </div>
   )
