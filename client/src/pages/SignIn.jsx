@@ -9,17 +9,41 @@ const SignIn = () => {
   // const { loading, error } = useSelector((state) => state.user);
   const [loading, setloading] = useState(false);
   const [error, seterror] = useState(false);
+  const [Message, setMessage] = useState("");
 
   const navigate = useNavigate();
   // const dispatch = useDispatch();
   const handleChange = (e) => {
-    
+    setFormData({...formData, [e.target.id]: e.target.value});
   };
 
   const handleSubmit = async (e) => {
-    
+    console.log(formData);
+    e.preventDefault();
+    try {
+        setloading(true);
+        const res = await fetch("http://localhost:3000/api/auth/signin",{
+          method:"POST",
+          headers:{
+            "Content-Type":"application/json",
+          },
+          body:JSON.stringify(formData),
+        })
 
-
+        const data = await res.json();
+        console.log(data);
+        if(data.message){
+        alert(data.message);
+        }
+        if(data._id){
+          navigate("/");
+        }
+        
+        setloading(false);
+    } catch (error) {
+      seterror(true);
+      console.log(error);
+    }
   };
 
 
@@ -56,7 +80,7 @@ const SignIn = () => {
         </Link>
       </div>
       <p className='text-red-700 mt-5'>
-        {error ? error.message || 'Something went wrong!' : ''}
+        {error ? `${Message}` || 'Something went wrong' : ''}
       </p>
     </div>
   );

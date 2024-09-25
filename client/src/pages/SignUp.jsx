@@ -35,14 +35,11 @@ const SignUp = () => {
         if(data.message === "User already registered"){
           setcomplete(true);
         }
-
-        
-
-
-        
-
-
         setLoading(false);
+        if(data.message === "User created Successfully"){
+          alert("User created successfully");
+          navigate("/sign-in");
+        }
       
 
     } catch (error) {
