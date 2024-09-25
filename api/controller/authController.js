@@ -6,6 +6,19 @@ export const signup = async(req, res, next)=>{
    
     const {username, password, email} = req.body;
     const hashedPassword =bcryptjs.hashSync(password, 10);
+    
+    const userName = await user.findOne({username: username});
+    const Email = await user.findOne({email: email});
+
+    if(userName){
+        res.json({message:"Username already taken"});
+    }
+
+    if(Email){
+        res.json({message:"User already registered"});
+    }
+        
+    
 
     const newUser = new user({username, password:hashedPassword, email});
     try {
@@ -14,5 +27,6 @@ export const signup = async(req, res, next)=>{
     } catch (error) {
         next(error);
     }
+
     
 }

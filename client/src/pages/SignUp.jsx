@@ -3,31 +3,55 @@ import { useState } from 'react';
 import {Link} from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 
+
 const SignUp = () => {
 
   const [formData, setFormData] = useState({});
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [complete, setcomplete] = useState(false);
+  const [Message, setMessage] = useState("");
   const navigate = useNavigate();;
 
   const handleSubmit = async(e) => {
-    console.log(formData);
     e.preventDefault();
+    try {
+      
+      setLoading(true);
+      
       const res = await fetch("http://localhost:3000/api/auth/signup", {
-        method:"POST",
-        headers:{"Content-Type": "application/json"},
-        body:JSON.stringify(formData),
-      })
-      const data = res.json();
-      console.log(data);
-    
+          method:"POST",
+          headers:{"Content-Type": "application/json"},
+          body:JSON.stringify(formData),
+        })
+        
+        const data = await res.json();
+        console.log(data);
+        
+        setMessage(data.message);
+        if(data.message === "User already registered"){
+          setcomplete(true);
+        }
+
+        
+
+
+        
+
+
+        setLoading(false);
+      
+
+    } catch (error) {
+      setError(true);
+      console.log(error);
+      setLoading(false);
+    }
   }
 
   const handleChange = (e) => {
     setFormData({...formData, [e.target.id]:e.target.value});
-    
-    
-  }
+  };
 
 
   return (
@@ -72,7 +96,11 @@ const SignUp = () => {
         <span className='text-blue-500'>Sign in</span>
       </Link>
     </div>
-    <p className='text-red-700 mt-5'>{error && 'Something went wrong!'}</p>
+    <p className='text-red-700 exists mt-5'>{error && 'Something went wrong!'}</p>
+    <p className='text-red-700 exists mt-5 mb-5 mr-2'>{setMessage && `${Message}`}</p>
+    <Link to="/login"  className='bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80'>{complete && "Login!"}</Link>
+    
+    
   </div>
   )
 }
