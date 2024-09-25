@@ -13,6 +13,13 @@ app.use(express.json());
 const port = 3000;
 connectDb(process.env.MONGODB_URL);
 
+
+
+app.listen(port ,()=>{
+    console.log("Server running on port " + port);
+    
+})
+
 app.get("/", async(req, res)=>{
     res.status(200).json({message:"Hello, world!"});
 
@@ -22,7 +29,12 @@ app.get("/", async(req, res)=>{
 app.use("/api/users", userRouter);
 app.use("/api/auth", authRouter);
 
-app.listen(port ,()=>{
-    console.log("Server running on port " + port);
-    
+app.use((err, req, res, next)=>{
+    const statusCode = res.statusCode || 500;
+    const message = err.message || "Internal Server Error";
+    return res.status(statusCode).json({
+        success:false,
+        message:message,
+        statusCode:statusCode,
+    });
 })
