@@ -10,11 +10,22 @@ const SignUp = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();;
 
-  const handleSubmit = () => {
-
+  const handleSubmit = async(e) => {
+    console.log(formData);
+    e.preventDefault();
+      const res = await fetch("http://localhost:3000/api/auth/signup", {
+        method:"POST",
+        headers:{"Content-Type": "application/json"},
+        body:JSON.stringify(formData),
+      })
+      const data = res.json();
+      console.log(data);
+    
   }
 
-  const handleChange = () => {
+  const handleChange = (e) => {
+    setFormData({...formData, [e.target.id]:e.target.value});
+    
     
   }
 
@@ -29,6 +40,7 @@ const SignUp = () => {
         id='username'
         className='bg-slate-100 p-3 rounded-lg'
         onChange={handleChange}
+        
       />
       <input
         type='email'
@@ -36,6 +48,7 @@ const SignUp = () => {
         id='email'
         className='bg-slate-100 p-3 rounded-lg'
         onChange={handleChange}
+        
       />
       <input
         type='password'
@@ -43,6 +56,7 @@ const SignUp = () => {
         id='password'
         className='bg-slate-100 p-3 rounded-lg'
         onChange={handleChange}
+        
       />
       <button
         disabled={loading}
