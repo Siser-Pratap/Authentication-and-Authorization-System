@@ -1,27 +1,31 @@
 import React from 'react'
 import {Link, useNavigate} from "react-router-dom";
 import { useState } from 'react';
-// import {useSelector} from "react-redux";
+import {useSelector} from "react-redux";
+import { useDispatch } from 'react-redux';
+import { signInSuccess, signInFailure, signInStart } from '../redux/user/userSlice.js';
  
 const SignIn = () => {
   
   const [formData, setFormData] = useState({});
-  // const { loading, error } = useSelector((state) => state.user);
-  const [loading, setloading] = useState(false);
-  const [error, seterror] = useState(false);
+  const {loading, error} = useSelector((state)=> state.user);
+  // const [loading, setloading] = useState(false);
+  // const [error, seterror] = useState(false);
   const [Message, setMessage] = useState("");
 
   const navigate = useNavigate();
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const handleChange = (e) => {
     setFormData({...formData, [e.target.id]: e.target.value});
   };
 
   const handleSubmit = async (e) => {
-    console.log(formData);
+    // console.log(formData);
     e.preventDefault();
     try {
-        setloading(true);
+
+        // setloading(true);
+        dispatch(signInStart());
         const res = await fetch("http://localhost:3000/api/auth/signin",{
           method:"POST",
           headers:{
@@ -31,19 +35,23 @@ const SignIn = () => {
         })
 
         const data = await res.json();
-        console.log(data);
+        // console.log(data);
         if(data.message){
         alert(data.message);
+        dispatch(signInFailure(data.message));
         }
         if(data._id){
+          dispatch(signInSuccess());
           navigate("/");
         }
         
-        setloading(false);
+        
     } catch (error) {
-      seterror(true);
       console.log(error);
+      dispatch(signInFailure(error));
+      
     }
+    setFormData({});
   };
 
 
@@ -80,7 +88,7 @@ const SignIn = () => {
         </Link>
       </div>
       <p className='text-red-700 mt-5'>
-        {error ? `${Message}` || 'Something went wrong' : ''}
+        {error ? `${error}` || 'Something went wrong' : ''}
       </p>
     </div>
   );
