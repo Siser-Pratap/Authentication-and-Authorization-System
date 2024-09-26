@@ -42,7 +42,8 @@ const SignIn = () => {
         dispatch(signInFailure(data.message));
         }
         if(data._id){
-          dispatch(signInSuccess());
+          console.log(data);
+          dispatch(signInSuccess(data));
           navigate("/");
         }
         
