@@ -40,7 +40,7 @@ const Oauth = () => {
 
 
   return (
-    <div className=' mx-auto flex flex-col max-w-lg '>
+    <div className=' mx-auto flex flex-col max-w-xl '>
     <button onClick={handleClick} className='bg-red-700 mt-2  text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80'>Continue with Google</button>
     </div>
   )

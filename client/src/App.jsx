@@ -8,6 +8,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import PrivateRoute from './components/PrivateRoute';
 import Profile from './pages/Profile';
+import PrivateRouteLogin from './components/PrivateRouteLogin';
 
 
 const App = () => {
@@ -17,8 +18,10 @@ const App = () => {
     <main>
       <Routes>
           <Route path="/" element={<Home />}/>
-          <Route path="/sign-in" element={<SignIn />} />
-          <Route path="/sign-up" element={<SignUp />}/>
+          <Route element={<PrivateRouteLogin />}>
+            <Route path="/sign-in" element={<SignIn />} />
+            <Route path="/sign-up" element={<SignUp />}/>
+          </Route>
           <Route path="/about" element={<About />} />
           <Route element={<PrivateRoute />}>
             <Route path="/profile" element={<Profile />} />
