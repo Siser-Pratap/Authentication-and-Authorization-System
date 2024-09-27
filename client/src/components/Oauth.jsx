@@ -2,10 +2,13 @@ import React from 'react'
 import { signInSuccess } from '../redux/user/userSlice';
 import app from "./firebase.js";
 import {GoogleAuthProvider, signInWithPopup, getAuth} from 'firebase/auth';
+import {useDispatch} from "react-redux";
+import {useNavigate} from "react-router-dom";
 
 const Oauth = () => {
 
-   
+   const navigate = useNavigate();
+   const dispatch = useDispatch();
 
   const handleClick = async() => {
     try {
@@ -13,19 +16,20 @@ const Oauth = () => {
       const provider = new GoogleAuthProvider();
       const auth = getAuth(app);
       const result = await signInWithPopup(auth, provider);
-      console.log(result);
+      
+      const res = await fetch("http://localhost:3000/api/auth/google", {
+        method:'POST',
+        headers:{'Content-Type': 'application/json'},
+        body:JSON.stringify({
+          name:result.user.displayName,
+          email:result.user.email,
+          photoURL:result.user.photoURL,
+        }),
+      });
 
-      // const res = await fetch("http://localhost:3000/api/auth/google", {
-      //   method:'POST',
-      //   headers:{'Content-Type': 'application/json'},
-      //   body:JSON.stringify({
-      //     name:"",
-      //     email:"",
-      //     photoURL:"",
-      //   }),
-      // });
-      // const data = res.json();
-      // signInSuccess(data);  
+      const data = await res.json();
+      dispatch(signInSuccess(data));  
+      navigate("/");
 
       
     } catch (error) {
@@ -36,7 +40,9 @@ const Oauth = () => {
 
 
   return (
-    <button onClick={handleClick} className='bg-red-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80'>Continue with Google</button>
+    <div className=' mx-auto flex flex-col max-w-lg '>
+    <button onClick={handleClick} className='bg-red-700 mt-2  text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80'>Continue with Google</button>
+    </div>
   )
 }
 

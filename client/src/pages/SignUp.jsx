@@ -89,8 +89,8 @@ const SignUp = () => {
       >
         {loading ? 'Loading...' : 'Sign Up'}
       </button>
-      <Oauth />
     </form>
+    <Oauth />
     <div className='flex gap-2 mt-5'>
       <p>Have an account?</p>
       <Link to='/sign-in'>
