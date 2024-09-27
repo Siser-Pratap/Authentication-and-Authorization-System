@@ -5,7 +5,9 @@ import { Navigate } from 'react-router-dom'
 
 const Header = () => {
 
-  const currentUser = useSelector((state)=>state.user.currentUser);
+  const User = useSelector((state)=>state.user.currentUser);
+  
+  
 
   const handleClick = () =>{
     <Navigate to="/sign-in" />
@@ -26,8 +28,8 @@ const Header = () => {
             <li>About</li>
           </Link>
           <Link to='/profile'>
-          
-            {currentUser? <img src={currentUser.photo} alt="profile-picture" /> : <button onClick={handleClick}>Sign-in</button>}
+            
+            {User? <img className='h-7 w-7 rounded-full object-cover' src={User.photo} alt="profile-picture" /> : <button onClick={handleClick}>Sign-in</button>}
           </Link>
         </ul>
       </div>

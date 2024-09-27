@@ -68,7 +68,7 @@ export const google = async(req, res, next)=>{
             const {password:hashedPassword, ...rest} = validUser._doc;
             const date = new Date(Date.now() + 3600000); //1hour
             res
-               .cookies('acces_token', token, {
+               .cookie('access_token', token, {
                 httpOnly: true,
                 expires:date,
                })
