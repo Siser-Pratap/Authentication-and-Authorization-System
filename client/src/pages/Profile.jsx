@@ -1,57 +1,87 @@
 import React from 'react'
-import {useSelector} from "react-redux";
-import {useRef, useState, useEffect} from 'react';
-import {app} from "..components/firebase.js";
-import user from '../../../api/models/user';
-
+import { useSelector } from 'react-redux'
+import { useState, useRef, useEffect} from 'react';
+import app from '../components/firebase.js';
+import {getDownloadURL, getStorage, ref, uploadBytesResumable} from "firebase/storage";
 
 
 const Profile = () => {
-
-  const User = useSelector(state=>state.user.currentUser);
+  
+  const [image, setimage] = useState(undefined);
+  const [imageError, setimageError] = useState(false);
+  const [imagePercent, setimagePercent] = useState(0);
+  const [loading, setloading] = useState(false);
+  const [updateSuccess, setupdateSuccess] = useState();
+  const [error, seterror] = useState(false);
+  const [formData, setformData] = useState({});
 
   const fileRef = useRef(null);
+  const User = useSelector((state) => state.user.currentUser);
 
-  const [Image, setImage] = useState();
-  const [loading, setloading] = useState();
-
-  const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
-  } 
-
-  const handleClickImage = () => {
+  const handleChangeImage = () =>{
     fileRef.current.click();
   }
 
-  const handleChange = () => {
+  const handleImageChange = (e) => {
+    
+    setimage(e.target.files[0]);
+    
+  }
+  
+  useEffect(() => {
+    if(image){
+    handleFileUpload(image);
+    }
+  }, [image]);
+  
 
+  const handleFileUpload = async(image) => {
+    const storage = getStorage(app);
+    const fileName = new Date().getTime() + image.name;
+    const storageRef = ref(storage, fileName);
+    const uploadTask = uploadBytesResumable(storageRef, image);
+    uploadTask.on(
+      'state_changed',
+      (snapshot) => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setimagePercent(Math.round(progress));
+      },
+      (error) => {
+        setimageError(true);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) =>
+          setformData({ ...formData, profilePicture: downloadURL })
+        );
+      }
+    );
+
+    
   }
 
-  const handleDeleteAccount = () => {
+  const handleSubmit = () => {}
 
-  }
+ 
 
-  const handleSignOut = () => {
+  const handleChange = () =>{}
 
-  }
+
+  const handleDeleteAccount = () =>{}
+
+  const handleSignOut = () =>{}
 
 
   return (
     <div className='p-3 max-w-lg mx-auto'>
       <h1 className='text-3xl font-semibold text-center my-7'>Profile</h1>
       <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
-        <input
-          type='file'
-          ref={fileRef}
-          hidden
-          accept='image/*'
-          onChange={handleImageChange}
-        />
-       <img
+        <input type='file' ref={fileRef} hidden onChange={handleImageChange} accept="image/*"  />
+        <img
           src={User.photo}
           alt='profile'
           className='h-24 w-24 self-center cursor-pointer rounded-full object-cover mt-2'
-          onClick={handleClickImage}
+          onClick={handleChangeImage}
         />
         <p className='text-sm self-center'>
           {imageError ? (
@@ -92,8 +122,8 @@ const Profile = () => {
         <button className='bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80'>
           {loading ? 'Loading...' : 'Update'}
         </button>
-      </form>
-      <div className='flex justify-between mt-5'>
+        </form>
+        <div className='flex justify-between mt-5'>
         <span
           onClick={handleDeleteAccount}
           className='text-red-700 cursor-pointer'
@@ -108,6 +138,7 @@ const Profile = () => {
       <p className='text-green-700 mt-5'>
         {updateSuccess && 'User is updated successfully!'}
       </p>
+
     </div>
   )
 }
