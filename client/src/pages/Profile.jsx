@@ -3,6 +3,11 @@ import { useSelector } from 'react-redux'
 import { useState, useRef, useEffect} from 'react';
 import app from '../components/firebase.js';
 import {getDownloadURL, getStorage, ref, uploadBytesResumable} from "firebase/storage";
+import {updateUserSuccess,updateUserFailure,
+  deleteUserStart,
+  deleteUserSuccess,
+  deleteUserFailure, updateUserStart, } from "../redux/user/userSlice.js";
+  import { useDispatch } from 'react-redux';
 
 
 const Profile = () => {
@@ -10,13 +15,15 @@ const Profile = () => {
   const [image, setimage] = useState(undefined);
   const [imageError, setimageError] = useState(false);
   const [imagePercent, setimagePercent] = useState(0);
-  const [loading, setloading] = useState(false);
+  
   const [updateSuccess, setupdateSuccess] = useState();
-  const [error, seterror] = useState(false);
+  
   const [formData, setformData] = useState({});
 
+  const {loading, error} = useSelector((state)=>state.user);
   const fileRef = useRef(null);
   const User = useSelector((state) => state.user.currentUser);
+  const dispatch = useDispatch();
 
   const handleChangeImage = () =>{
     fileRef.current.click();
@@ -52,7 +59,7 @@ const Profile = () => {
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) =>
-          setformData({ ...formData, profilePicture: downloadURL })
+          setformData({ ...formData, photo: downloadURL })
         );
       }
     );
@@ -60,11 +67,32 @@ const Profile = () => {
     
   }
 
-  const handleSubmit = () => {}
+  const handleSubmit = async(e) => {
+    
+    e.preventDefault();
+    try {
+      dispatch(updateUserStart());
+      const res = await fetch(`https://localhost:3000/api/user/update/${User._id}`, {
+        method: "POST",
+        headers: { 'Content-type': 'application/json'},
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      User
+      
+
+      
+      
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
  
 
-  const handleChange = () =>{}
+  const handleChange = (e) =>{
+    setformData({...formData, [e.target.id]: e.target.value});
+  }
 
 
   const handleDeleteAccount = () =>{}
