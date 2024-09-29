@@ -4,13 +4,15 @@ import connectDb from "./connectDb.js";
 import userRouter from "./routes/userRoutes.js";
 import authRouter from "./routes/authRoutes.js";
 import cors from "cors";
+import cookieParser from 'cookie-parser';
+
 
 
 dotenv.config();
 
 
 const app = express();
-app.use(cors());
+
 app.use(express.json());
 const port = 3000;
 connectDb(process.env.MONGODB_URL);
@@ -26,7 +28,8 @@ app.get("/", async(req, res)=>{
     res.status(200).json({message:"Hello, world!"});
 
 })
-
+app.use(cors());
+app.use(cookieParser());
 
 app.use("/api/users", userRouter);
 app.use("/api/auth", authRouter);

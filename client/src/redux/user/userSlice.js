@@ -13,6 +13,7 @@ const userSlice = createSlice({
     reducers:{
         signInStart: (state)=>{
             state.loading = true;
+            state.error = false;
         },
         signInSuccess : (state, action)=>{
             state.currentUser = action.payload;
@@ -21,14 +22,14 @@ const userSlice = createSlice({
         },
         signInFailure: (state, action)=>{
             state.loading = false;
-            state.error = action.payload;
+            state.error = false;
         },
         updateUserStart : (state, action)=>{
-            state.currentUser = action.payload;
             state.loading = true;
             state.error = false;
         },
         updateUserSuccess : (state, action)=>{
+            state.currentUser = action.payload;
             state.loading = false;
             state.error = false;
         },
@@ -37,11 +38,12 @@ const userSlice = createSlice({
             state.loading = false;
         },
         deleteUserStart : (state, action)=>{
-            state.currentUser = action.payload;
+           
             state.loading = true;
-            state.error = false;
+           
         },
         deleteUserSuccess : (state, action)=>{
+            state.currentUser = null,
             state.loading = false;
             state.error = false;
         },
@@ -49,9 +51,14 @@ const userSlice = createSlice({
             state.error = true;
             state.loading = false;
         },
+        signOut: (state) => {
+            state.currentUser = null;
+            state.loading = false;
+            state.error = false;
+          },
     }
 });
 
-export const {signInFailure, signInSuccess, signInStart, updateUserStart, updateUserFailure, updateUserSuccess, deleteUserFailure, deleteUserStart, deleteUserSuccess} = userSlice.actions;
+export const {signInFailure, signInSuccess, signInStart, updateUserStart, updateUserFailure, updateUserSuccess, deleteUserFailure, deleteUserStart, deleteUserSuccess, signOut} = userSlice.actions;
 
 export default userSlice.reducer;

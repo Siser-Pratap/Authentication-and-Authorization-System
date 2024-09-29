@@ -1,6 +1,7 @@
 import { errorHandler } from '../error/error.js';
 import bcryptjs from 'bcryptjs';
 import user from '../models/user.js';
+import jwt from 'jsonwebtoken';
 
 export const test = (req, res)=>{
     res.status(200).json({message:"Success"});
@@ -31,3 +32,23 @@ export const updateUser = async(req, res, next) => {
         next(error);
     }
 }
+
+
+export const verifyToken = (req, res, next)=>{
+    
+    const token = req.cookies.access_token;
+    
+    if (!token){
+        return next(errorHandler(401,'User in not authenticated'));
+        }
+    
+    jwt.verify(token, process.env.JWT_SECRET_KEY, (err, user)=>{
+        if(err){
+            return next(errorHandler(403, 'Token is not valid'));
+            
+        }
+        req.user = user;
+        next();
+    })
+}
+
