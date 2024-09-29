@@ -82,7 +82,7 @@ const Profile = () => {
       const res = await fetch(`http://localhost:3000/api/users/update/${currentUser._id}`, {
         method: "POST",
         headers: { 'Content-type': 'application/json'},
-        credentials:'true',
+        credentials:'include',
         body: JSON.stringify(formData),
       });
       const data = await res.json();

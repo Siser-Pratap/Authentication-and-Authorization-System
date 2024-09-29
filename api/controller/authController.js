@@ -44,13 +44,12 @@ export const signin = async(req, res, next) =>{
         res.json({message:"Invalid credentials"});
     }
 
-    const token = jwt.sign({id:validUser._id}, process.env.JWT_SECRET_KEY);
+    const token = await jwt.sign({id:validUser._id}, process.env.JWT_SECRET_KEY);
+    console.log(token);
     const newDate = new Date(Date.now() + 3600000); //1hour
     const {password:hashedPassword, ...rest } = validUser._doc;
-    res
-        .cookie("access_token", token, {httpOnly: true, expires: newDate})
-        .status(200)
-        .json(rest)
+    res.cookie('token', token, {httpOnly: true, maxAge: newDate}).status(200).json(rest);
+
 
 
 } catch (error) {
