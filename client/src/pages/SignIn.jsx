@@ -5,8 +5,10 @@ import {useSelector} from "react-redux";
 import { useDispatch } from 'react-redux';
 import { signInSuccess, signInFailure, signInStart } from '../redux/user/userSlice.js';
 import Oauth from '../components/Oauth.jsx';
+import axios from 'axios';
 
 const SignIn = () => {
+  axios.defaults.withCredentials=true;
   
   const [formData, setFormData] = useState({});
   const {loading, error} = useSelector((state)=> state.user);
@@ -27,16 +29,19 @@ const SignIn = () => {
 
         // setloading(true);
         dispatch(signInStart());
-        const res = await fetch("http://localhost:3000/api/auth/signin",{
-          method:"POST",
-          headers:{
-            "Content-Type":"application/json",
-          },
-          body:JSON.stringify(formData),
-        })
+        // const res = await fetch("http://localhost:3000/api/auth/signin",{
+        //   method:"POST",
+        //   headers:{
+        //     "Content-Type":"application/json",
+        //   },
+        //   body:JSON.stringify(formData),
+        // })
 
-        const data = await res.json();
-        // console.log(data);
+        const res = await axios.post("http://localhost:3000/api/auth/signin", formData);
+        console.log(res);
+
+        const data = await res.data;
+        console.log(data);
         if(data.message){
         alert(data.message);
         dispatch(signInFailure(data.message));
@@ -85,7 +90,7 @@ const SignIn = () => {
       </form>
       <Oauth />
       <div className='flex gap-2 mt-5'>
-        <p>Dont Have an account?</p>
+        <p>Don't Have an account?</p>
         <Link to='/sign-up'>
           <span className='text-blue-500'>Sign up</span>
         </Link>

@@ -79,13 +79,18 @@ const Profile = () => {
     console.log(formData);
     try {
       dispatch(updateUserStart());
-      const res = await fetch(`http://localhost:3000/api/users/update/${currentUser._id}`, {
-        method: "POST",
-        headers: { 'Content-type': 'application/json'},
-        credentials:'include',
-        body: JSON.stringify(formData),
-      });
-      const data = await res.json();
+      // const res = await fetch(`http://localhost:3000/api/users/update/${currentUser._id}`, {
+      //   method: "POST",
+      //   headers: { 'Content-type': 'application/json'},
+      //   credentials:'include',
+      //   body: JSON.stringify(formData),
+      // });
+
+      const res = await axios.post(`http://localhost:3000/api/users/update/${currentUser._id}`,formData);
+      console.log(res);
+
+      const data = await res.data;
+      console.log(data);
       if(data.success===false){
         dispatch(updateUserFailure(data));
         return;

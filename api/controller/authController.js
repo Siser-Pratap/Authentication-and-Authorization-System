@@ -35,24 +35,25 @@ export const signup = async(req, res, next)=>{
 export const signin = async(req, res, next) =>{
     const {email, password} = req.body;
     try {
+    console.log("true");
     const validUser = await user.findOne({email: email});
     if(!validUser){
         res.json({message:"User not found"});
     }
-    const validPassword = bcryptjs.compareSync(password, validUser.password);
+    const validPassword = await bcryptjs.compare(password, validUser.password);
     if(!validPassword){
         res.json({message:"Invalid credentials"});
     }
 
-    const token = await jwt.sign({id:validUser._id}, process.env.JWT_SECRET_KEY);
+    const token =  jwt.sign({id:validUser._id}, process.env.JWT_SECRET_KEY, {expiresIn:"15m"});
     console.log(token);
-    const newDate = new Date(Date.now() + 3600000); //1hour
     const {password:hashedPassword, ...rest } = validUser._doc;
-    res.cookie('token', token, {httpOnly: true, maxAge: newDate}).status(200).json(rest);
+    res.cookie('token', token, {httpOnly: true}).send(rest);
 
 
 
 } catch (error) {
+    console.log(error);
     next(error);
 }
 }

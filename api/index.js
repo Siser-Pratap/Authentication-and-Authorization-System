@@ -53,14 +53,15 @@ const verifyToken = (req, res, next)=>{
     if (!token){
         return next(errorHandler(401,'User in not authenticated'));
         }
-    jwt.verify(token, process.env.JWT_SECRET_KEY, (err, user)=>{
-        if(err){
-            return next(errorHandler(403, 'Token is not valid'));
-            
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+            req.user = decoded;
+            next();
+        } catch (error) {
+            return next(errorHandler(402, error.message));
         }
-        req.user = user;
-        next();
-    })
+    
+    
 }
 
 const updateUser = async(req, res, next) => {
@@ -82,7 +83,7 @@ const updateUser = async(req, res, next) => {
         },{new: true}
     );
     const {password, ...rest} = updateUser._doc;
-    res.status(200).json(rest);
+    res.send(rest);
     } catch (error) {
         next(error);
     }
